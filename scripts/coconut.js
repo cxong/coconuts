@@ -4,12 +4,14 @@ var Coconut = function(game, group, x, y, dx, dy) {
   this.body.velocity.setTo(dx, dy);
   this.anchor.setTo(0.5, 0.5);
   group.add(this);
+  this.landed = false;
 };
 Coconut.prototype = Object.create(Phaser.Sprite.prototype);
 Coconut.prototype.constructor = Coconut;
 
 Coconut.prototype.update = function() {
   if (this.y > SAND_Y) {
+    this.landed = true;
     this.body.allowGravity = false;
     this.y = SAND_Y;
     this.body.immovable = true;

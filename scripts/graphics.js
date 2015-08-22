@@ -3,4 +3,4 @@ var SCREEN_HEIGHT = 576;
 
 var SAND_Y = SCREEN_HEIGHT - 80;
 
-var GRAVITY = 500;
+var GRAVITY = 1000;

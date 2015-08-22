@@ -23,6 +23,9 @@ BasicGame.Preload.prototype = {
         this.game.load.image('tourist' + i, 'images/tourists/' + i + '.png');
       }
 
+      this.game.load.audio('hit', 'sounds/hit.wav');
+      this.game.load.audio('sand', 'sounds/sand.wav');
+      this.game.load.audio('shoot', 'sounds/shoot.wav');
       this.game.load.audio('music', 'sounds/headinthesand.ogg');
     },
 

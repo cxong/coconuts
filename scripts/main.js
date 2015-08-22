@@ -8,6 +8,9 @@ GameState.prototype.create = function() {
 	this.game.physics.arcade.gravity.y = GRAVITY;
 
   this.sounds = {
+    hit: this.game.add.sound('hit'),
+    sand: this.game.add.sound('sand'),
+    shoot: this.game.add.sound('shoot'),
   };
 
   this.groups = {
@@ -22,7 +25,7 @@ GameState.prototype.create = function() {
   this.groups.sand.add(this.game.add.sprite(0, SAND_Y, 'sand'));
 
   this.tree = new Tree(
-    this.game, this, this.groups.tree, this.groups.coconuts,
+    this.game, this, this.groups.tree, this.groups.coconuts, this.sounds,
     SCREEN_WIDTH / 2, SAND_Y, 'tree');
   this.game.input.onDown.add(this.tree.attack, this.tree);
 
@@ -41,7 +44,8 @@ GameState.prototype.update = function() {
     coconut.body.velocity.y *= -0.5;
     coconut.body.velocity.x /= 2;
     tourist.onHit();
-  });
+    this.sounds.hit.play();
+  }, null, this);
   this.enemyGenerator.update();
 
   // Clear inactive objects
@@ -49,6 +53,7 @@ GameState.prototype.update = function() {
     if (coconut.landed) {
       this.groups.coconuts.remove(coconut);
       this.groups.bg.add(coconut);
+      this.sounds.sand.play();
     }
   }, this);
   this.groups.tourists.forEach(function(tourist) {

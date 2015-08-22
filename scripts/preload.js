@@ -23,7 +23,7 @@ BasicGame.Preload.prototype = {
         this.game.load.image('tourist' + i, 'images/tourists/' + i + '.png');
       }
 
-      //this.game.load.audio('bump', 'sounds/bump.wav');
+      this.game.load.audio('music', 'sounds/headinthesand.ogg');
     },
 
     create: function () {

@@ -27,6 +27,9 @@ GameState.prototype.create = function() {
   this.game.input.onDown.add(this.tree.attack, this.tree);
 
   this.enemyGenerator = new EnemyGenerator(this.game, this.groups.tourists);
+
+  this.music = this.game.add.audio('music');
+  this.music.play('', 0, 1, true);
 };
 
 GameState.prototype.update = function() {

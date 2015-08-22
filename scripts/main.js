@@ -32,16 +32,33 @@ GameState.prototype.create = function() {
   this.enemyGenerator = new EnemyGenerator(this.game, this.groups.tourists);
 
   this.music = this.game.add.audio('music');
-  this.music.play('', 0, 1, true);
+  //this.music.play('', 0, 1, true);
+
+  this.timeLast = this.game.time.now;
+  var timer = this.game.time.create();
+  timer.add(800, function() {
+    this.music.play('', 0, 1, true);
+  }, this);
+  timer.start();
 };
 
 GameState.prototype.update = function() {
+  // Up the beat
+  if (this.game.time.now - this.timeLast > BAR_MS * 2) {
+    while (this.timeLast + BAR_MS * 2 < this.game.time.now) {
+      this.timeLast += BAR_MS * 2;
+    }
+    this.tree.beat(this.timeLast);
+  }
+
   this.game.physics.arcade.overlap(
     this.groups.coconuts, this.groups.tourists, function(coconut, tourist) {
     if (tourist.hit) {
       return;
     }
-    coconut.body.velocity.y *= -0.5;
+    if (coconut.body.velocity.y > 0) {
+      coconut.body.velocity.y *= -0.5;
+    }
     coconut.body.velocity.x /= 2;
     tourist.onHit();
     this.sounds.hit.play();
@@ -62,6 +79,10 @@ GameState.prototype.update = function() {
       this.groups.bg.add(tourist);
     }
   }, this);
+  if (this.groups.bg.length > MAX_BG) {
+    var s = this.groups.bg.removeChildAt(0);
+    s.destroy();
+  }
 };
 
 GameState.prototype.reset = function(k) {

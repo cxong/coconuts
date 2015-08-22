@@ -9,3 +9,6 @@ var NUM_TOURISTS = 1;
 var TOURIST_SPEED = 100;
 
 var BAR_MS = 800;
+var TREE_ATTACKS_PER_BAR = 2;
+
+var MAX_BG = 50;

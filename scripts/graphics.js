@@ -7,3 +7,5 @@ var GRAVITY = 1000;
 
 var NUM_TOURISTS = 1;
 var TOURIST_SPEED = 100;
+
+var BAR_MS = 800;

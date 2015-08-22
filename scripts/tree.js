@@ -9,6 +9,14 @@ var Tree = function(game, theGame, group, coconuts, sounds, x, y, sprite) {
 
   this.coconuts = coconuts;
   this.sounds = sounds;
+
+  game.add.tween(this.scale).to(
+    {y: 1.3}, BAR_MS / 4, Phaser.Easing.Cubic.InOut,
+    true, // autostart
+    0,  // delay
+    -1, // loop forever
+    true // yoyo
+  );
 };
 Tree.prototype = Object.create(Phaser.Sprite.prototype);
 Tree.prototype.constructor = Tree;

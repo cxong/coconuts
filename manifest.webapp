@@ -1,0 +1,16 @@
+{
+  "name": "Coconuts",
+  "description": "Drop coconuts on unsuspecting tourists in rhythm",
+  "launch_path": "/index.html",
+  "icons": {
+    "512": "images/icon-512.png",
+    "128": "images/icon-128.png"
+  },
+  "developer": {
+    "name": "congusbongus",
+    "url": "http://cxong.github.io"
+  },
+  "default_locale": "en",
+  "type": "web",
+  "version": "1.0"
+}

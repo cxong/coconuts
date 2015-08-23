@@ -15,6 +15,7 @@ GameState.prototype.create = function() {
 
   this.groups = {
     bg: this.game.add.group(),
+    rubbish: this.game.add.group(),
     tree: this.game.add.group(),
     tourists: this.game.add.group(),
     coconuts: this.game.add.group(),
@@ -22,13 +23,16 @@ GameState.prototype.create = function() {
     title: this.game.add.group()
   };
 
+  this.groups.bg.add(this.game.add.sprite(0, 0, 'bg'));
   this.groups.sand.add(this.game.add.sprite(0, SAND_Y, 'sand'));
 
   this.tree = new Tree(
     this.game, this.groups.tree, this.groups.coconuts, this.sounds,
     SCREEN_WIDTH / 2, SAND_Y, 'tree');
-  this.game.input.onDown.add(this.attack);
-  this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(function(k) {
+  this.game.input.onDown.add(function() {
+    this.attack();
+  }, this);
+  this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(function() {
     this.attack();
   }, this);
 
@@ -36,28 +40,34 @@ GameState.prototype.create = function() {
 
   this.music = this.game.add.audio('music');
 
-  var bigTextStyle = {
+  this.bigTextStyle = {
     font: "36px Courier New, monospace",
     fill: "#000",
     fontWeight: "bold"
   };
-  var scoreTitle = this.game.add.text(10, 10, "SCORE", bigTextStyle);
+  this.highStyle = {
+    font: "36px Courier New, monospace",
+    fill: "#f00",
+    fontWeight: "bold"
+  };
+  var scoreTitle = this.game.add.text(10, 10, "SCORE", this.bigTextStyle);
   scoreTitle.scale.x = TEXT_X_SCALE;
   var secondRowText = scoreTitle.y + scoreTitle.height + 5;
-  this.scoreText = this.game.add.text(10, secondRowText, "0", bigTextStyle);
+  this.scoreText = this.game.add.text(
+    10, secondRowText, "0", this.bigTextStyle);
   this.scoreText.scale.x = TEXT_X_SCALE;
 
   var barsLeftTitle = this.game.add.text(
-    SCREEN_WIDTH / 2, 10, "LEFT", bigTextStyle);
+    SCREEN_WIDTH / 2, 10, "LEFT", this.bigTextStyle);
   barsLeftTitle.scale.x = TEXT_X_SCALE;
   barsLeftTitle.anchor.x = 0.5;
   this.barsLeftText = this.game.add.text(
-    SCREEN_WIDTH / 2, secondRowText, "0", bigTextStyle);
+    SCREEN_WIDTH / 2, secondRowText, "0", this.bigTextStyle);
   this.barsLeftText.scale.x = TEXT_X_SCALE;
   this.barsLeftText.anchor.x = 0.5;
 
   var highTitle = this.game.add.text(
-    SCREEN_WIDTH - 10, 10, "HIGH SCORE", bigTextStyle);
+    SCREEN_WIDTH - 10, 10, "HIGH SCORE", this.bigTextStyle);
   highTitle.scale.x = TEXT_X_SCALE;
   highTitle.anchor.x = 1;
   this.high = parseInt(localStorage["Coconuts.HighScore"]);
@@ -65,9 +75,17 @@ GameState.prototype.create = function() {
     this.high = 5000;
   }
   this.highText = this.game.add.text(
-    SCREEN_WIDTH - 10, secondRowText, this.high, bigTextStyle);
+    SCREEN_WIDTH - 10, secondRowText, this.high, this.bigTextStyle);
   this.highText.scale.x = TEXT_X_SCALE;
   this.highText.anchor.x = 1;
+  this.highText.x = SCREEN_WIDTH - 10 - this.highText.width;
+
+  this.promptText = this.game.add.text(
+    SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.65,
+    'CLICK or SPACE to start', this.bigTextStyle);
+  this.highText.scale.x = TEXT_X_SCALE;
+  this.highText.anchor.x = 0.5;
+  this.promptText.alpha = 0;
 
   this.scorePopupStyle = {
     font: "24px Courier New, monospace",
@@ -83,6 +101,8 @@ GameState.prototype.create = function() {
   this.started = false;
   this.score = 0;
   this.barsLeft = 100;
+
+  this.readyTime = this.game.time.now + 1000;
 };
 
 GameState.prototype.start = function() {
@@ -109,7 +129,9 @@ GameState.prototype.start = function() {
 
   this.started = true;
 
-  this.highText.setStyle({fill: "#000"});
+  this.highText.setStyle(this.bigTextStyle);
+
+  this.promptText.alpha = 0;
 };
 
 GameState.prototype.stop = function() {
@@ -127,17 +149,24 @@ GameState.prototype.stop = function() {
       storedHigh < this.high) {
     localStorage["Coconuts.HighScore"] = this.high;
   }
+
+  this.readyTime = this.game.time.now + 1000;
 };
 
 GameState.prototype.attack = function() {
   if (!this.started) {
-    this.start();
+    if (this.readyTime < this.game.time.now) {
+      this.start();
+    }
   } else {
     this.tree.attack();
   }
 };
 
 GameState.prototype.update = function() {
+  if (!this.started && this.readyTime < this.game.time.now) {
+    this.promptText = 1;
+  }
   // Up the beat
   if (this.started) {
     if (this.game.time.now - this.timeLast > BAR_MS * 2) {
@@ -178,7 +207,7 @@ GameState.prototype.update = function() {
     if (this.score >= this.high) {
       this.high = this.score;
       this.highText.setText(this.high);
-      this.highText.setStyle({fill: "#f00"});
+      this.highText.setStyle(this.highStyle);
     }
 
     // Popup score text
@@ -195,18 +224,18 @@ GameState.prototype.update = function() {
   this.groups.coconuts.forEach(function(coconut) {
     if (coconut.landed) {
       this.groups.coconuts.remove(coconut);
-      this.groups.bg.add(coconut);
+      this.groups.rubbish.add(coconut);
       this.sounds.sand.play();
     }
   }, this);
   this.groups.tourists.forEach(function(tourist) {
     if (tourist.hit) {
       this.groups.tourists.remove(tourist);
-      this.groups.bg.add(tourist);
+      this.groups.rubbish.add(tourist);
     }
   }, this);
-  if (this.groups.bg.length > MAX_BG) {
-    var s = this.groups.bg.removeChildAt(0);
+  if (this.groups.rubbish.length > MAX_RUBBISH) {
+    var s = this.groups.rubbish.removeChildAt(0);
     s.destroy();
   }
 };

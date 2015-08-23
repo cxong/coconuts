@@ -16,6 +16,6 @@ CloudGenerator.prototype.update = function() {
       x = SCREEN_WIDTH + 200;
       dx = -1;
     }
-    new Cloud(this.game, this.group, x, Math.random() * 200, dx);
+    new Cloud(this.game, this.group, x, Math.random() * 300, dx);
   }
 };

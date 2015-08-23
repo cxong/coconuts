@@ -40,6 +40,8 @@ Tree.prototype.addCoconut = function() {
     child.x += 15;
   }
   child.rotation = Math.random() * 360;
+  this.game.add.tween(child.scale).from(
+    {x: 0, y: 0}, 800, Phaser.Easing.Elastic.Out, true);
   this.addChild(child);
 };
 
@@ -66,7 +68,7 @@ Tree.prototype.update = function() {
   if (f > 0.5) {
     f = 1 - f;
   }
-  this.scale.y = 1 + 0.3 * Phaser.Easing.Cubic.InOut(f * 2);
+  this.scale.y = 1 + TREE_BOUNCE * Phaser.Easing.Cubic.InOut(f * 2);
 
   // Rotate
   f = (elapsed / (BAR_MS * 2)) % 1;
@@ -81,7 +83,7 @@ Tree.prototype.update = function() {
       shootChanged = shootChanged || this.shootX !== 0;
       this.shootX = 0;
     }
-    this.angle = 30 * Phaser.Easing.Cubic.InOut(f * 4);
+    this.angle = TREE_ROTATE * Phaser.Easing.Cubic.InOut(f * 4);
   } else {
     // rotate left
     if (f > 0.75) {
@@ -93,7 +95,7 @@ Tree.prototype.update = function() {
       shootChanged = shootChanged || this.shootX !== 0;
       this.shootX = 0;
     }
-    this.angle = -30 * Phaser.Easing.Cubic.InOut(f * 4);
+    this.angle = -TREE_ROTATE * Phaser.Easing.Cubic.InOut(f * 4);
   }
 
   // attack

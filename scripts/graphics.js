@@ -5,7 +5,7 @@ var SAND_Y = SCREEN_HEIGHT - 80;
 
 var GRAVITY = 1000;
 
-var NUM_TOURISTS = 1;
+var NUM_TOURISTS = 3;
 var TOURIST_SPEED = 100;
 
 var CLOUD_SPEED = 40;

@@ -27,9 +27,9 @@ GameState.prototype.create = function() {
   this.tree = new Tree(
     this.game, this, this.groups.tree, this.groups.coconuts, this.sounds,
     SCREEN_WIDTH / 2, SAND_Y, 'tree');
-  this.game.input.onDown.add(this.tree.attack, this.tree);
+  this.game.input.onDown.add(this.attack);
   this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(function(k) {
-    this.tree.attack(this.tree);
+    this.attack();
   }, this);
 
   this.enemyGenerator = new EnemyGenerator(this.game, this.groups.tourists);
@@ -50,13 +50,21 @@ GameState.prototype.create = function() {
     fontWeight: 'bold'
   };
 
-  this.reset();
+  this.title = this.game.add.sprite(
+    SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 'title');
+  this.title.anchor.setTo(0.5);
+
+  this.started = false;
+  this.score = 0;
 };
 
-GameState.prototype.reset = function(k) {
+GameState.prototype.start = function(k) {
   this.score = 0;
   // Positions score text
   this.addScore(0);
+
+  this.groups.tourists.removeAll();
+  this.groups.coconuts.removeAll();
 
   this.timeLast = this.game.time.now;
   var timer = this.game.time.create();
@@ -64,6 +72,20 @@ GameState.prototype.reset = function(k) {
     this.music.play('', 0, 1, true);
   }, this);
   timer.start();
+
+  this.tree.beat(this.timeLast);
+
+  this.title.alpha = 0;
+
+  this.started = true;
+};
+
+GameState.prototype.attack = function() {
+  if (!this.started) {
+    this.start();
+  } else {
+    this.tree.attack();
+  }
 };
 
 GameState.prototype.update = function() {

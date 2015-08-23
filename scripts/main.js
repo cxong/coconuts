@@ -32,7 +32,6 @@ GameState.prototype.create = function() {
   this.enemyGenerator = new EnemyGenerator(this.game, this.groups.tourists);
 
   this.music = this.game.add.audio('music');
-  //this.music.play('', 0, 1, true);
 
   this.timeLast = this.game.time.now;
   var timer = this.game.time.create();
@@ -49,6 +48,9 @@ GameState.prototype.update = function() {
       this.timeLast += BAR_MS * 2;
     }
     this.tree.beat(this.timeLast);
+    this.groups.tourists.forEach(function(tourist) {
+      tourist.beat(this.timeLast);
+    }, this);
   }
 
   this.game.physics.arcade.overlap(
@@ -57,9 +59,9 @@ GameState.prototype.update = function() {
       return;
     }
     if (coconut.body.velocity.y > 0) {
-      coconut.body.velocity.y *= -0.5;
+      coconut.body.velocity.y *= -0.56;
     }
-    coconut.body.velocity.x /= 2;
+    coconut.body.velocity.x *= 0.7;
     tourist.onHit();
     this.sounds.hit.play();
   }, null, this);

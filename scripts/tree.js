@@ -66,7 +66,6 @@ Tree.prototype.update = function() {
       Math.floor((this.game.time.now - this.timeLast) / (BAR_MS / TREE_ATTACKS_PER_BAR));
     var minibeat =
       Math.floor((this.timeLastUpdate - this.timeLast) / (BAR_MS / TREE_ATTACKS_PER_BAR));
-    console.log(minibeatLast, minibeat);
     if (minibeat < minibeatLast) {
       this.doAttack();
       this.attackNext = false;

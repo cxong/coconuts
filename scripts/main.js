@@ -28,10 +28,19 @@ GameState.prototype.create = function() {
     this.game, this, this.groups.tree, this.groups.coconuts, this.sounds,
     SCREEN_WIDTH / 2, SAND_Y, 'tree');
   this.game.input.onDown.add(this.tree.attack, this.tree);
+  this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(function(k) {
+    this.tree.attack(this.tree);
+  }, this);
 
   this.enemyGenerator = new EnemyGenerator(this.game, this.groups.tourists);
 
   this.music = this.game.add.audio('music');
+
+  this.reset();
+};
+
+GameState.prototype.reset = function(k) {
+  this.score = 0;
 
   this.timeLast = this.game.time.now;
   var timer = this.game.time.create();
@@ -85,7 +94,4 @@ GameState.prototype.update = function() {
     var s = this.groups.bg.removeChildAt(0);
     s.destroy();
   }
-};
-
-GameState.prototype.reset = function(k) {
 };

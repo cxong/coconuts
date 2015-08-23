@@ -11,7 +11,6 @@ var Tree = function(game, theGame, group, coconuts, sounds, x, y, sprite) {
   this.sounds = sounds;
 
   this.timeLast = game.time.now;
-  this.timeLastUpdate = game.time.now;
   this.shootX = 0;
   this.attackNext = false;
 };
@@ -31,7 +30,8 @@ Tree.prototype.doAttack = function() {
 
 Tree.prototype.update = function() {
   // Bounce up/down
-  var elapsed = this.game.time.now - this.timeLast;
+  var now = this.game.time.now;
+  var elapsed = now - this.timeLast;
   var f = (elapsed / (BAR_MS / 2)) % 1;
   if (f > 0.5) {
     f = 1 - f;
@@ -40,39 +40,37 @@ Tree.prototype.update = function() {
 
   // Rotate
   f = (elapsed / (BAR_MS * 2)) % 1;
+  var shootChanged = false;
   if (f < 0.5) {
     // rotate right
-    this.shootX = 0;
     if (f > 0.25) {
       f = 0.5 - f;
+      shootChanged = shootChanged || this.shootX !== 1;
       this.shootX = 1;
+    } else {
+      shootChanged = shootChanged || this.shootX !== 0;
+      this.shootX = 0;
     }
     this.angle = 30 * Phaser.Easing.Cubic.InOut(f * 4);
   } else {
     // rotate left
-    this.shootX = 0;
     if (f > 0.75) {
+      shootChanged = shootChanged || this.shootX !== -1;
       this.shootX = -1;
       f = 1 - f;
     } else {
       f -= 0.5;
+      shootChanged = shootChanged || this.shootX !== 0;
+      this.shootX = 0;
     }
     this.angle = -30 * Phaser.Easing.Cubic.InOut(f * 4);
   }
 
   // attack
-  if (this.attackNext) {
-    var minibeatLast =
-      Math.floor((this.game.time.now - this.timeLast) / (BAR_MS / TREE_ATTACKS_PER_BAR));
-    var minibeat =
-      Math.floor((this.timeLastUpdate - this.timeLast) / (BAR_MS / TREE_ATTACKS_PER_BAR));
-    if (minibeat < minibeatLast) {
-      this.doAttack();
-      this.attackNext = false;
-    }
+  if (this.attackNext && shootChanged) {
+    this.doAttack();
+    this.attackNext = false;
   }
-
-  this.timeLastUpdate = this.game.time.now;
 };
 
 Tree.prototype.beat = function(timeLast) {

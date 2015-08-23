@@ -16,7 +16,13 @@ EnemyGenerator.prototype.update = function() {
       x = SCREEN_WIDTH + 30;
       dx = -1;
     }
-    new Tourist(
-      this.game, this.group, x, dx, Math.floor(Math.random() * NUM_TOURISTS));
+    var choice = Math.floor(Math.random() * 10);
+    if (choice < 5) {
+      new Tourist(this.game, this.group, x, dx, 0.7, 1, 2);
+    } else if (choice < 8) {
+      new Tourist(this.game, this.group, x, dx, 1, 2, 1);
+    } else {
+      new Tourist(this.game, this.group, x, dx, 1.5, 4, 0);
+    }
   }
 };

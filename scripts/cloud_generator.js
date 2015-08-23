@@ -16,12 +16,6 @@ CloudGenerator.prototype.update = function() {
       x = SCREEN_WIDTH + 200;
       dx = -1;
     }
-    var cloud = this.game.add.sprite(x, Math.random() * 200, 'cloud');
-    cloud.anchor.setTo(0.5);
-    this.game.physics.arcade.enable(cloud);
-    cloud.body.allowGravity = false;
-    cloud.body.velocity.x = dx * CLOUD_SPEED * (1 + Math.random());
-    cloud.outOfBoundsKill = true;
-    this.group.add(cloud);
+    new Cloud(this.game, this.group, x, Math.random() * 200, dx);
   }
 };

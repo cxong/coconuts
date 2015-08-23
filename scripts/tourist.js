@@ -1,9 +1,11 @@
-var Tourist = function(game, group, x, dx, spriteI) {
+var Tourist = function(game, group, x, dx, speed, score, spriteI) {
   Phaser.Sprite.call(this, game, x, SAND_Y, 'tourist' + spriteI);
   game.physics.arcade.enable(this);
   this.body.allowGravity = false;
   this.dx = dx;
-  this.body.velocity.setTo(dx * TOURIST_SPEED, 0);
+  this.speed = speed;
+  this.body.velocity.setTo(dx * TOURIST_SPEED * speed, 0);
+  this.score = score;
   this.anchor.setTo(0.5, 1);
   group.add(this);
   this.hit = false;
@@ -28,7 +30,7 @@ Tourist.prototype.update = function() {
       d = Phaser.Easing.Linear.None(f * 2);
     }
     d -= 0.5;
-    d *= 0.3;
+    d *= 0.3 * this.speed;
     this.anchor.x = d * -this.dx + 0.5;
 
     // Bobble

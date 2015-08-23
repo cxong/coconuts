@@ -15,6 +15,7 @@ GameState.prototype.create = function() {
 
   this.groups = {
     bg: this.game.add.group(),
+    clouds: this.game.add.group(),
     rubbish: this.game.add.group(),
     tree: this.game.add.group(),
     tourists: this.game.add.group(),
@@ -38,7 +39,7 @@ GameState.prototype.create = function() {
 
   this.enemyGenerator = new EnemyGenerator(this.game, this.groups.tourists);
 
-  this.cloudGenerator = new CloudGenerator(this.game, this.groups.bg);
+  this.cloudGenerator = new CloudGenerator(this.game, this.groups.clouds);
 
   this.music = this.game.add.audio('music');
 
@@ -178,6 +179,9 @@ GameState.prototype.update = function() {
       this.groups.tourists.forEach(function(tourist) {
         tourist.beat(this.timeLast);
       }, this);
+      this.groups.clouds.forEach(function(cloud) {
+        cloud.beat(this.timeLast);
+      }, this);
     }
     if (this.game.time.now - this.timeLastHalf > BAR_MS) {
       while (this.timeLastHalf + BAR_MS < this.game.time.now) {
@@ -200,7 +204,8 @@ GameState.prototype.update = function() {
     tourist.onHit();
     this.sounds.hit.play();
     coconut.hits++;
-    this.score += 100 * coconut.hits;
+    var score = 100 * coconut.hits * tourist.score;
+    this.score += score;
     this.scoreText.setText(this.score);
     if (this.score >= this.high) {
       this.high = this.score;
@@ -210,7 +215,7 @@ GameState.prototype.update = function() {
 
     // Popup score text
     var popup = this.game.add.text(
-      coconut.x, coconut.y, 100 * coconut.hits, this.scorePopupStyle);
+      coconut.x, coconut.y, score, this.scorePopupStyle);
     popup.scale.x = 0.5;
     this.game.time.events.add(800, function() {
       popup.destroy();

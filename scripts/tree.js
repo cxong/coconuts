@@ -29,7 +29,7 @@ Tree.prototype.addCoconut = function() {
   if (this.children.length >= 3) {
     return;
   }
-  var child = this.game.make.sprite(0, 0 - this.height * 0.6, 'coconut');
+  var child = this.game.make.sprite(0, 0 - this.height * 0.65, 'coconut');
   child.anchor.setTo(0.5);
   if (this.children.length === 0) {
   } else if (this.children.length === 1) {
@@ -53,10 +53,18 @@ Tree.prototype.doAttack = function() {
   if (this.children.length === 0) {
     return;
   }
-  this.removeChildAt(this.children.length - 1);
+  var theChosen = this.removeChildAt(0);
+  // Shuffle the remaining coconuts to take up the lost position
+  var elder = theChosen;
+  for (var i = 0; i < this.children.length; i++) {
+    var child = this.getChildAt(i);
+    this.game.add.tween(child).to(
+      {x: elder.x, y: elder.y}, 400, Phaser.Easing.Cubic.Out, true);
+    elder = child;
+  }
   var x = Math.random() * 100 - 50 + this.shootX * 200;
   new Coconut(
-    this.game, this.coconuts, this.x, this.y - this.height * 0.7, x, -700);
+    this.game, this.coconuts, theChosen.world.x, theChosen.world.y, x, -700);
   this.sounds.shoot.play();
 };
 

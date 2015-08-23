@@ -36,11 +36,21 @@ GameState.prototype.create = function() {
 
   this.music = this.game.add.audio('music');
 
+  this.scoreText = this.game.add.text(SCREEN_WIDTH - 10, 10, "0", {
+    font: "48px Courier New, monospace",
+    fill: "#000",
+    align: "right",
+    fontWeight: "bold"
+  });
+  this.scoreText.scale.x = 2;
+
   this.reset();
 };
 
 GameState.prototype.reset = function(k) {
   this.score = 0;
+  // Positions score text
+  this.addScore(0);
 
   this.timeLast = this.game.time.now;
   var timer = this.game.time.create();
@@ -73,6 +83,8 @@ GameState.prototype.update = function() {
     coconut.body.velocity.x *= 0.7;
     tourist.onHit();
     this.sounds.hit.play();
+    coconut.hits++;
+    this.addScore(100 * coconut.hits);
   }, null, this);
   this.enemyGenerator.update();
 
@@ -95,3 +107,9 @@ GameState.prototype.update = function() {
     s.destroy();
   }
 };
+
+GameState.prototype.addScore = function(score) {
+  this.score += score;
+  this.scoreText.setText(this.score);
+  this.scoreText.x = SCREEN_WIDTH - this.scoreText.width - 10;
+}

@@ -5,6 +5,7 @@ var Coconut = function(game, group, x, y, dx, dy) {
   this.anchor.setTo(0.5, 0.5);
   group.add(this);
   this.landed = false;
+  this.hits = 0;
 };
 Coconut.prototype = Object.create(Phaser.Sprite.prototype);
 Coconut.prototype.constructor = Coconut;

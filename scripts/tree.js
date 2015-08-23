@@ -11,7 +11,6 @@ var Tree = function(game, group, coconuts, sounds, x, y, sprite) {
   this.start();
 
   this.sounds = sounds;
-
 };
 Tree.prototype = Object.create(Phaser.Sprite.prototype);
 Tree.prototype.constructor = Tree;

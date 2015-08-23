@@ -28,6 +28,7 @@ GameState.prototype.create = function() {
   var sand = this.game.add.sprite(0, SCREEN_HEIGHT, 'sand');
   sand.anchor.y = 1;
   this.groups.sand.add(sand);
+  this.water = new Water(this.game, this.groups.sand);
 
   this.tree = new Tree(
     this.game, this.groups.tree, this.groups.coconuts, this.sounds,
@@ -177,6 +178,7 @@ GameState.prototype.update = function() {
       while (this.timeLast + BAR_MS * 2 < this.game.time.now) {
         this.timeLast += BAR_MS * 2;
       }
+      this.water.beat(this.timeLast);
       this.tree.beat(this.timeLast);
       this.groups.tourists.forEach(function(tourist) {
         tourist.beat(this.timeLast);

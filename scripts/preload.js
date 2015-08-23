@@ -22,6 +22,7 @@ BasicGame.Preload.prototype = {
       this.game.load.image('tree', 'images/tree.png');
       this.game.load.image('bg', 'images/bg.png');
       this.game.load.image('sand', 'images/sand.png');
+      this.game.load.image('water', 'images/water.png');
       for (var i = 0; i < NUM_TOURISTS; i++) {
         this.game.load.image('tourist' + i, 'images/tourists/' + i + '.png');
       }

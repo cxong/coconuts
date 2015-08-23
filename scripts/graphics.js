@@ -8,6 +8,8 @@ var GRAVITY = 1000;
 var NUM_TOURISTS = 1;
 var TOURIST_SPEED = 100;
 
+var CLOUD_SPEED = 40;
+
 var BAR_MS = 800;
 var TREE_ATTACKS_PER_BAR = 2;
 

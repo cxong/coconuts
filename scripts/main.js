@@ -38,6 +38,8 @@ GameState.prototype.create = function() {
 
   this.enemyGenerator = new EnemyGenerator(this.game, this.groups.tourists);
 
+  this.cloudGenerator = new CloudGenerator(this.game, this.groups.bg);
+
   this.music = this.game.add.audio('music');
 
   this.bigTextStyle = {
@@ -194,10 +196,7 @@ GameState.prototype.update = function() {
     if (tourist.hit) {
       return;
     }
-    if (coconut.body.velocity.y > 0) {
-      coconut.body.velocity.y *= -0.56;
-    }
-    coconut.body.velocity.x *= 0.7;
+    coconut.bounce();
     tourist.onHit();
     this.sounds.hit.play();
     coconut.hits++;
@@ -218,6 +217,8 @@ GameState.prototype.update = function() {
     }, this);
   }, null, this);
   this.enemyGenerator.update();
+
+  this.cloudGenerator.update();
 
   // Clear inactive objects
   this.groups.coconuts.forEach(function(coconut) {

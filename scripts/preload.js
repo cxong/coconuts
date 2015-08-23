@@ -17,6 +17,7 @@ BasicGame.Preload.prototype = {
       this.load.setPreloadSprite(this.preloadBar);
 
       this.game.load.image('title', 'images/title.png');
+      this.game.load.image('cloud', 'images/cloud.png');
       this.game.load.image('coconut', 'images/coconut.png');
       this.game.load.image('tree', 'images/tree.png');
       this.game.load.image('bg', 'images/bg.png');

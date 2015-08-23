@@ -30,6 +30,9 @@ Tourist.prototype.update = function() {
     d -= 0.5;
     d *= 0.3;
     this.anchor.x = d * -this.dx + 0.5;
+
+    // Bobble
+    this.scale.y = 1 + 0.3 * Phaser.Easing.Cubic.InOut(f * 2);
   }
 
   // Off screen kill

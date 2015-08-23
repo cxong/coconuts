@@ -43,6 +43,12 @@ GameState.prototype.create = function() {
     fontWeight: "bold"
   });
   this.scoreText.scale.x = 2;
+  this.scorePopupStyle = {
+    font: "24px Courier New, monospace",
+    fill: "#fff",
+    align: 'center',
+    fontWeight: 'bold'
+  };
 
   this.reset();
 };
@@ -85,6 +91,14 @@ GameState.prototype.update = function() {
     this.sounds.hit.play();
     coconut.hits++;
     this.addScore(100 * coconut.hits);
+
+    // Popup score text
+    var popup = this.game.add.text(
+      coconut.x, coconut.y, 100 * coconut.hits, this.scorePopupStyle);
+    popup.scale.x = 0.5;
+    this.game.time.events.add(800, function() {
+      popup.destroy();
+    }, this);
   }, null, this);
   this.enemyGenerator.update();
 

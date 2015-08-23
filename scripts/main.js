@@ -78,13 +78,12 @@ GameState.prototype.create = function() {
     SCREEN_WIDTH - 10, secondRowText, this.high, this.bigTextStyle);
   this.highText.scale.x = TEXT_X_SCALE;
   this.highText.anchor.x = 1;
-  this.highText.x = SCREEN_WIDTH - 10 - this.highText.width;
 
   this.promptText = this.game.add.text(
     SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.65,
     'CLICK or SPACE to start', this.bigTextStyle);
-  this.highText.scale.x = TEXT_X_SCALE;
-  this.highText.anchor.x = 0.5;
+  this.promptText.scale.x = TEXT_X_SCALE;
+  this.promptText.anchor.x = 0.5;
   this.promptText.alpha = 0;
 
   this.scorePopupStyle = {
@@ -165,7 +164,7 @@ GameState.prototype.attack = function() {
 
 GameState.prototype.update = function() {
   if (!this.started && this.readyTime < this.game.time.now) {
-    this.promptText = 1;
+    this.promptText.alpha = 1;
   }
   // Up the beat
   if (this.started) {

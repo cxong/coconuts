@@ -36,13 +36,35 @@ GameState.prototype.create = function() {
 
   this.music = this.game.add.audio('music');
 
-  this.scoreText = this.game.add.text(SCREEN_WIDTH - 10, 10, "0", {
-    font: "48px Courier New, monospace",
+  var bigTextStyle = {
+    font: "36px Courier New, monospace",
     fill: "#000",
-    align: "right",
     fontWeight: "bold"
-  });
-  this.scoreText.scale.x = 2;
+  };
+  var scoreTitle = this.game.add.text(10, 10, "SCORE", bigTextStyle);
+  scoreTitle.scale.x = TEXT_X_SCALE;
+  var secondRowText = scoreTitle.y + scoreTitle.height + 5;
+  this.scoreText = this.game.add.text(10, secondRowText, "0", bigTextStyle);
+  this.scoreText.scale.x = TEXT_X_SCALE;
+
+  var barsLeftTitle = this.game.add.text(
+    SCREEN_WIDTH / 2, 10, "LEFT", bigTextStyle);
+  barsLeftTitle.scale.x = TEXT_X_SCALE;
+  barsLeftTitle.anchor.x = 0.5;
+  this.barsLeftText = this.game.add.text(
+    SCREEN_WIDTH / 2, secondRowText, "0", bigTextStyle);
+  this.barsLeftText.scale.x = TEXT_X_SCALE;
+  this.barsLeftText.anchor.x = 0.5;
+
+  var highTitle = this.game.add.text(
+    SCREEN_WIDTH - 10, 10, "HIGH SCORE", bigTextStyle);
+  highTitle.scale.x = TEXT_X_SCALE;
+  highTitle.anchor.x = 1;
+  this.highText = this.game.add.text(
+    SCREEN_WIDTH - 10, secondRowText, "0", bigTextStyle);
+  this.highText.scale.x = TEXT_X_SCALE;
+  this.highText.anchor.x = 1;
+
   this.scorePopupStyle = {
     font: "24px Courier New, monospace",
     fill: "#fff",
@@ -56,17 +78,21 @@ GameState.prototype.create = function() {
 
   this.started = false;
   this.score = 0;
+  this.barsLeft = 100;
 };
 
 GameState.prototype.start = function(k) {
   this.score = 0;
-  // Positions score text
-  this.addScore(0);
+  this.scoreText.setText(this.score);
+
+  this.barsLeft = 100;
+  this.barsLeftText.setText(this.barsLeft);
 
   this.groups.tourists.removeAll();
   this.groups.coconuts.removeAll();
 
   this.timeLast = this.game.time.now;
+  this.timeLastHalf = this.timeLast;
   var timer = this.game.time.create();
   timer.add(800, function() {
     this.music.play('', 0, 1, true);
@@ -80,6 +106,17 @@ GameState.prototype.start = function(k) {
   this.started = true;
 };
 
+GameState.prototype.stop = function(k) {
+  this.barsLeft = 0;
+  this.barsLeftText.setText(this.barsLeft);
+
+  this.music.stop();
+
+  this.title.alpha = 1;
+
+  this.started = false;
+};
+
 GameState.prototype.attack = function() {
   if (!this.started) {
     this.start();
@@ -90,14 +127,26 @@ GameState.prototype.attack = function() {
 
 GameState.prototype.update = function() {
   // Up the beat
-  if (this.game.time.now - this.timeLast > BAR_MS * 2) {
-    while (this.timeLast + BAR_MS * 2 < this.game.time.now) {
-      this.timeLast += BAR_MS * 2;
+  if (this.started) {
+    if (this.game.time.now - this.timeLast > BAR_MS * 2) {
+      while (this.timeLast + BAR_MS * 2 < this.game.time.now) {
+        this.timeLast += BAR_MS * 2;
+      }
+      this.tree.beat(this.timeLast);
+      this.groups.tourists.forEach(function(tourist) {
+        tourist.beat(this.timeLast);
+      }, this);
     }
-    this.tree.beat(this.timeLast);
-    this.groups.tourists.forEach(function(tourist) {
-      tourist.beat(this.timeLast);
-    }, this);
+    if (this.game.time.now - this.timeLastHalf > BAR_MS) {
+      while (this.timeLastHalf + BAR_MS < this.game.time.now) {
+        this.timeLastHalf += BAR_MS;
+      }
+      this.barsLeft--;
+      this.barsLeftText.setText(this.barsLeft);
+      if (this.barsLeft === 0) {
+        this.stop();
+      }
+    }
   }
 
   this.game.physics.arcade.overlap(
@@ -112,7 +161,8 @@ GameState.prototype.update = function() {
     tourist.onHit();
     this.sounds.hit.play();
     coconut.hits++;
-    this.addScore(100 * coconut.hits);
+    this.score += 100 * coconut.hits;
+    this.scoreText.setText(this.score);
 
     // Popup score text
     var popup = this.game.add.text(
@@ -143,9 +193,3 @@ GameState.prototype.update = function() {
     s.destroy();
   }
 };
-
-GameState.prototype.addScore = function(score) {
-  this.score += score;
-  this.scoreText.setText(this.score);
-  this.scoreText.x = SCREEN_WIDTH - this.scoreText.width - 10;
-}

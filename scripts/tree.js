@@ -107,12 +107,12 @@ Tree.prototype.update = function() {
   }
 
   // attack
-  if (shootChanged && this.shootX === 0) {
-    this.addCoconut();
-  }
   if (this.attackNext && shootChanged) {
     this.doAttack();
     this.attackNext = false;
+  }
+  if (shootChanged && this.shootX === 0) {
+    this.addCoconut();
   }
 };
 

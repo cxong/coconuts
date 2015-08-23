@@ -39,6 +39,7 @@ Tree.prototype.addCoconut = function() {
     child.y += 20;
     child.x += 15;
   }
+  child.rotation = Math.random() * 360;
   this.addChild(child);
 };
 

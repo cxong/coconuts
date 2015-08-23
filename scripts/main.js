@@ -25,7 +25,9 @@ GameState.prototype.create = function() {
   };
 
   this.groups.bg.add(this.game.add.sprite(0, 0, 'bg'));
-  this.groups.sand.add(this.game.add.sprite(0, SAND_Y, 'sand'));
+  var sand = this.game.add.sprite(0, SCREEN_HEIGHT, 'sand');
+  sand.anchor.y = 1;
+  this.groups.sand.add(sand);
 
   this.tree = new Tree(
     this.game, this.groups.tree, this.groups.coconuts, this.sounds,

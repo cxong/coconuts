@@ -60,8 +60,12 @@ GameState.prototype.create = function() {
     SCREEN_WIDTH - 10, 10, "HIGH SCORE", bigTextStyle);
   highTitle.scale.x = TEXT_X_SCALE;
   highTitle.anchor.x = 1;
+  this.high = parseInt(localStorage["Coconuts.HighScore"]);
+  if (this.high < 5000 || isNaN(this.high)) {
+    this.high = 5000;
+  }
   this.highText = this.game.add.text(
-    SCREEN_WIDTH - 10, secondRowText, "0", bigTextStyle);
+    SCREEN_WIDTH - 10, secondRowText, this.high, bigTextStyle);
   this.highText.scale.x = TEXT_X_SCALE;
   this.highText.anchor.x = 1;
 
@@ -81,7 +85,7 @@ GameState.prototype.create = function() {
   this.barsLeft = 100;
 };
 
-GameState.prototype.start = function(k) {
+GameState.prototype.start = function() {
   this.score = 0;
   this.scoreText.setText(this.score);
 
@@ -104,9 +108,11 @@ GameState.prototype.start = function(k) {
   this.title.alpha = 0;
 
   this.started = true;
+
+  this.highText.setStyle({fill: "#000"});
 };
 
-GameState.prototype.stop = function(k) {
+GameState.prototype.stop = function() {
   this.barsLeft = 0;
   this.barsLeftText.setText(this.barsLeft);
 
@@ -115,6 +121,12 @@ GameState.prototype.stop = function(k) {
   this.title.alpha = 1;
 
   this.started = false;
+
+  var storedHigh = parseInt(localStorage["Coconuts.HighScore"]);
+  if (localStorage["Coconuts.HighScore"] == null ||
+      storedHigh < this.high) {
+    localStorage["Coconuts.HighScore"] = this.high;
+  }
 };
 
 GameState.prototype.attack = function() {
@@ -163,6 +175,11 @@ GameState.prototype.update = function() {
     coconut.hits++;
     this.score += 100 * coconut.hits;
     this.scoreText.setText(this.score);
+    if (this.score >= this.high) {
+      this.high = this.score;
+      this.highText.setText(this.high);
+      this.highText.setStyle({fill: "#f00"});
+    }
 
     // Popup score text
     var popup = this.game.add.text(

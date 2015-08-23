@@ -25,7 +25,7 @@ GameState.prototype.create = function() {
   this.groups.sand.add(this.game.add.sprite(0, SAND_Y, 'sand'));
 
   this.tree = new Tree(
-    this.game, this, this.groups.tree, this.groups.coconuts, this.sounds,
+    this.game, this.groups.tree, this.groups.coconuts, this.sounds,
     SCREEN_WIDTH / 2, SAND_Y, 'tree');
   this.game.input.onDown.add(this.attack);
   this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(function(k) {

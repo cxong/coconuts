@@ -1,31 +1,60 @@
-var Tree = function(game, theGame, group, coconuts, sounds, x, y, sprite) {
+var Tree = function(game, group, coconuts, sounds, x, y, sprite) {
   Phaser.Sprite.call(this,
                      game,
                      x, y + 10,
                      sprite);
-  this.theGame = theGame;
+  this.game = game;
   this.anchor.setTo(0.5, 1.0);
   group.add(this);
 
   this.coconuts = coconuts;
+  this.start();
+
   this.sounds = sounds;
 
-  this.timeLast = game.time.now;
-  this.shootX = 0;
-  this.attackNext = false;
 };
 Tree.prototype = Object.create(Phaser.Sprite.prototype);
 Tree.prototype.constructor = Tree;
+
+Tree.prototype.start = function() {
+  for (var i = 0; i < 3; i++) {
+    this.addCoconut();
+  }
+  this.timeLast = this.game.time.now;
+  this.shootX = 0;
+  this.attackNext = false;
+}
+
+Tree.prototype.addCoconut = function() {
+  if (this.children.length >= 3) {
+    return;
+  }
+  var child = this.game.make.sprite(0, 0 - this.height * 0.6, 'coconut');
+  child.anchor.setTo(0.5);
+  if (this.children.length === 0) {
+  } else if (this.children.length === 1) {
+    child.y += 20;
+    child.x -= 15;
+  } else if (this.children.length === 2) {
+    child.y += 20;
+    child.x += 15;
+  }
+  this.addChild(child);
+};
 
 Tree.prototype.attack = function() {
   this.attackNext = true;
 };
 
 Tree.prototype.doAttack = function() {
+  if (this.children.length === 0) {
+    return;
+  }
+  this.removeChildAt(this.children.length - 1);
   var x = Math.random() * 100 - 50 + this.shootX * 200;
   new Coconut(
     this.game, this.coconuts, this.x, this.y - this.height * 0.7, x, -700);
-    this.sounds.shoot.play();
+  this.sounds.shoot.play();
 };
 
 Tree.prototype.update = function() {
@@ -67,6 +96,9 @@ Tree.prototype.update = function() {
   }
 
   // attack
+  if (shootChanged && this.shootX === 0) {
+    this.addCoconut();
+  }
   if (this.attackNext && shootChanged) {
     this.doAttack();
     this.attackNext = false;
